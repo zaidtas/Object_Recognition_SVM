@@ -18,7 +18,7 @@
 
 ## Exercise 1, 2 and 3 pipeline implemented
 
-All these exercises are finally implemented in the ```project_template.py``` file in the ```pcl_callback()``` function with proper comments. 
+All these exercises are finally implemented in the ```project_template.py``` file in the ```pcl_callback()``` function with proper comments. The ```compute_color_histograms()``` and ```compute_normal_histograms()``` have been implemented in features.py in the sensor_stick ros library used in Exercise 3. I am attaching a copy in the home folder for review.  
 
 The raw point cloud detected by the RGBD camera is shown below. 
 ![orig_pcl]
@@ -45,8 +45,14 @@ We use a Euclidean Clustering technique described here to separate the objects i
 ![cluster](./images/cluster.png)
 
 ### Exercise 3: Object recognition using SVM 
-For this exercise first we capture features( histogram of hsv and normals ) by spawning each object in our list in 50 random orientations. Then we train an SVM classifier using an rbf kernel and following is the normalized confusion matrix.
+For this exercise first we capture features( histogram of hsv and normals ) by spawning each object in our list in 50 random orientations. Then we train an SVM classifier using an rbf kernel and following is the normalized confusion matrix. 
 
+
+**What worked and what didn't**
+
+Initially the ```capture_features.py``` script would only spawn a particular object in 5 random orientations. The accuracy for that was around 60% only. Also initially I used a linear kernel in SVM instead of a rbf kernel which leads to more complex decision boundaries and the accuracy score went up to 92%. I played around with the number of bins for histogramming both HSV and normal features but settled upon 32 number of bins. 
+
+I was using a bins range of (0,256) for normal histogramming earlier which would spoil the features and instead used the value of (-1, 1). Color histograms were still calculated using range of (0,256)
 
 ![svm](./images/conf_mat.png)
 
@@ -58,12 +64,17 @@ The accuracy score is 0.924
 
 We store the output of the segmentation in the output folder as ```.yaml``` files for each scene. We are able to correctly classify(100%) on all the test scenes. The following are the screenshots from each of the test scenes.
 
-**Test Scene: 1**:
+**Test Scene: 1:
 ![test1](./images/test1.png)
 
-**Test Scene: 2**:
+**Test Scene: 2:
 ![test1](./images/test2.png)
 
-**Test Scene: 3**:
+**Test Scene: 3:
 ![test1](./images/test3.png)
+
+## Future work
+
+* In the output files instead of using the same drop location we could have given a random pose within a range so as to avoid piling up objects
+* We should go through the object perception pipeline after each picking up of objects as a feedback to our algorithm.
 
